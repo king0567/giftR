@@ -1,41 +1,27 @@
-import React, { createContext, useState, useEffect } from "react";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { randomUUID } from "expo-crypto";
+import React, { useContext, useState } from "react";
+import { View, TextInput, Button } from "react-native";
+import PeopleContext from "../PeopleContext";
+import { useNavigation } from "@react-navigation/native";
 
-const PeopleContext = createContext();
+export default function AddPersonScreen() {
+    const [name, setName] = useState("");
+    const [dob, setDob] = useState("");
+    const { addPerson } = useContext(PeopleContext);
+    const navigation = useNavigation();
 
-export const PeopleProvider = ({ children }) => {
-    const [people, setPeople] = useState([]);
-
-    const STORAGE_KEY = "people";
-
-    // Load people from AsyncStorage
-    useEffect(() => {
-        const loadPeople = async () => {
-            const savedPeople = await AsyncStorage.getItem(STORAGE_KEY);
-            if (savedPeople) setPeople(JSON.parse(savedPeople));
-        };
-        loadPeople();
-        console.log(people);
-    }, []);
-
-    const addPerson = async (name, dob) => {
-        const newPerson = {
-            id: randomUUID(),
-            name,
-            dob,
-        };
-        const updatedPeople = [...people, newPerson];
-        console.log(updatedPeople);
-        setPeople(updatedPeople);
-        await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(updatedPeople));
+    const savePerson = () => {
+        if (name && dob) {
+            addPerson(name, dob);
+            navigation.goBack();
+        }
     };
-
     return (
-        <PeopleContext.Provider value={{ people, addPerson }}>
-            {children}
-        </PeopleContext.Provider>
-    );
-};
+        <View>
+            <TextInput placeholder="Name" value={name} onChangeText={setName} />
+            <TextInput placeholder="2003-01-03" value={dob} onChangeText={setDob} />
 
-export default PeopleContext;
+            <Button title="Save" onPress={savePerson} />
+            <Button title="Cancel" onPress={() => navigation.goBack()} />
+        </View>
+    );
+}
