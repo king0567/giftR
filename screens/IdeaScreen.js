@@ -1,53 +1,52 @@
 import { useNavigation } from "@react-navigation/native";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { FlatList, View, Text, SafeAreaView, Pressable, Image, StyleSheet } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import PeopleContext from "../PeopleContext";
 
-export default function PeopleScreen() {
+export default function IdeaScreen({ route }) {
     const navigation = useNavigation();
 
-    const { people, removePerson, clearStorage } = useContext(PeopleContext);
+    const [ideas, setIdeas] = useState([])
+    const [refresh, setRefresh] = useState(0)
 
-    people.sort((a, b) => {
-        const aDate = new Date(a.dob)
-        const bDate = new Date(b.dob)
+    const { id } = route.params
 
-        if (aDate > bDate) {
-            return 1
-        } else if (aDate < bDate) {
-            return -1
-        } else {
-            return 0
-        }
-    })
+    const { getIdeas, removeIdea, people } = useContext(PeopleContext);
+
+    const person = people.filter(person => person.id === id)[0]
+
+    useEffect(() => {
+        getPersonIdeas(id)
+    }, [refresh])
+
+    async function getPersonIdeas(id) {
+        const personIdeas = await getIdeas(id)
+        setIdeas(personIdeas)
+    }
+
+    async function deleteIdea(itemId) {
+        await removeIdea(id, itemId)
+        setRefresh(refresh + 1)
+    }
 
     return (
         <SafeAreaProvider>
             <SafeAreaView>
-                {people.length === 0 && <View style={styles.listItem}>
-                    <Text>No People Saved Yet</Text>
+                <Text>{person.name}</Text>
+                {ideas.length === 0 && <View style={styles.listItem}>
+                    <Text>No Ideas Yet</Text>
                 </View>}
-                {people.length > 0 && <FlatList
-                    data={people}
+                {ideas.length > 0 && <FlatList
+                    data={ideas}
                     keyExtractor={(item) => item.id}
                     renderItem={({ item }) => (
                         <View style={styles.listItem}>
                             <View>
-                                <Text>{item.name}</Text>
-                                <Text>Birthday: {item.dob}</Text>
+                                <Text>{item.text}</Text>
                             </View>
                             <View style={styles.iconDiv}>
-                                <Pressable onPress={() => navigation.navigate("Ideas", { id: item.id })}>
-                                    <Image
-                                        source={require('../assets/light-bulb-15.png')}
-                                        style={{
-                                            width: 40,
-                                            height: 40,
-                                        }}
-                                    />
-                                </Pressable>
-                                <Pressable style={styles.icons} onPress={() => removePerson(item.id)}>
+                                <Pressable style={styles.icons} onPress={() => deleteIdea(item.id)}>
                                     <Image
                                         source={require('../assets/trash.png')}
                                         style={{
@@ -63,9 +62,9 @@ export default function PeopleScreen() {
             </SafeAreaView>
             <Pressable
                 style={styles.FAB}
-                onPress={() => navigation.navigate("Add Person")}
+                onPress={() => navigation.navigate("Add Ideas", { id: id })}
             >
-                <Text style={styles.FABText}>Add Another Person</Text>
+                <Text style={styles.FABText}>Add An Idea</Text>
             </Pressable>
         </SafeAreaProvider>
     );
