@@ -5,20 +5,35 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import PeopleContext from "../PeopleContext";
 
 export default function PeopleScreen() {
+
     const navigation = useNavigation();
 
     const { people, removePerson, clearStorage } = useContext(PeopleContext);
+
+    // clearStorage()
 
     people.sort((a, b) => {
         const aDate = new Date(a.dob)
         const bDate = new Date(b.dob)
 
-        if (aDate > bDate) {
+        const aMonth = aDate.getMonth()
+        const aDay = aDate.getDate()
+
+        const bMonth = bDate.getMonth()
+        const bDay = bDate.getDate()
+
+        if (aMonth > bMonth) {
             return 1
-        } else if (aDate < bDate) {
+        } else if (aMonth < bMonth) {
             return -1
         } else {
-            return 0
+            if (aDay > bDay) {
+                return 1
+            } else if (aDay < bDay) {
+                return -1
+            } else {
+                return 0
+            }
         }
     })
 

@@ -36,8 +36,17 @@ export const PeopleProvider = ({ children }) => {
             ideas: []
         };
         const updatedPeople = [...people, newPerson];
-        setPeople(updatedPeople);
-        await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(updatedPeople));
+
+        return new Promise(async (resolve, reject) => {
+            try {
+                setPeople(updatedPeople);
+                await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(updatedPeople));
+                resolve("Save Successful")
+            } catch (err) {
+                reject(err)
+            }
+        })
+
     };
 
     const removePerson = async (id) => {
