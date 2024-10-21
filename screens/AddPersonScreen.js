@@ -7,6 +7,7 @@ import DatePicker from 'react-native-modern-datepicker';
 export default function AddPersonScreen() {
     const [selectedDate, setSelectedDate] = useState('');
     const [name, setName] = useState("");
+    const [errorMessage, setErrorMessage] = useState("");
     const [isModalVisible, setIsModalVisible] = useState(false)
 
 
@@ -14,19 +15,14 @@ export default function AddPersonScreen() {
     const navigation = useNavigation();
 
     const savePerson = () => {
-        if (name && selectedDate) {
-            addPerson(name, selectedDate)
-                .then(() => {
-                    navigation.goBack();
-                })
-                .catch((err) => {
-                    setIsModalVisible(true)
-                })
-
-        }
-        else {
-            alert("Please fill in all fields")
-        }
+        addPerson(name, selectedDate)
+            .then(() => {
+                navigation.goBack();
+            })
+            .catch((err) => {
+                setErrorMessage(err)
+                setIsModalVisible(true)
+            })
     };
     return (
 
@@ -43,7 +39,7 @@ export default function AddPersonScreen() {
                 }}
             >
                 <View>
-                    <Text>Person could not be saved</Text>
+                    <Text>{errorMessage}</Text>
                     <Button title="Okay" onPress={() => { setIsModalVisible(!isModalVisible) }} />
                 </View>
             </Modal>

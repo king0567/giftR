@@ -39,11 +39,19 @@ export const PeopleProvider = ({ children }) => {
 
         return new Promise(async (resolve, reject) => {
             try {
+                if (!name) throw new Error("Please include a name")
+                if (!dob) throw new Error("Please include a date of birth")
+
                 setPeople(updatedPeople);
                 await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(updatedPeople));
                 resolve("Save Successful")
             } catch (err) {
-                reject(err)
+                if (err.message === "Please include a name" || err.message === "Please include a date of birth") {
+                    reject(err.message)
+                } else {
+                    reject("Save failed, please try again")
+                }
+
             }
         })
 
@@ -61,22 +69,43 @@ export const PeopleProvider = ({ children }) => {
         return person.ideas
     }
 
-    const addIdea = async (text, userId) => {
+    const addIdea = async (text, userId, imgURI, imgHeight, imgWidth) => {
         const newIdea = {
             id: randomUUID(),
-            text
+            text,
+            imgURI,
+            width: imgWidth,
+            height: imgHeight
         };
 
-        const updatedPeople = people.map((person) => {
-            if (person.id === userId) {
-                person.ideas.push(newIdea)
-                return person
-            } else {
-                return person
+
+        return new Promise(async (resolve, reject) => {
+            try {
+
+                if (!text) throw new Error("Please include some text")
+                if (!imgURI) throw new Error("Please include an image by taking a photo")
+
+                const updatedPeople = people.map((person) => {
+                    if (person.id === userId) {
+                        person.ideas.push(newIdea)
+                        return person
+                    } else {
+                        return person
+                    }
+                })
+
+                await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(updatedPeople));
+                resolve("Idea Added")
+            } catch (err) {
+                if (err.message === "Please include some text" || err.message === "Please include an image by taking a photo") {
+                    reject(err.message)
+                } else {
+                    reject("Save failed, please try again")
+                }
             }
         })
 
-        await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(updatedPeople));
+
 
     };
 

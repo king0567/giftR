@@ -42,6 +42,10 @@ export default function IdeaScreen({ route }) {
                     keyExtractor={(item) => item.id}
                     renderItem={({ item }) => (
                         <View style={styles.listItem}>
+                            <Image source={{ uri: item.imgURI }} style={{
+                                width: 200 * (item.width / item.height),
+                                height: 200
+                            }} />
                             <View>
                                 <Text>{item.text}</Text>
                             </View>

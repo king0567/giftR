@@ -4,6 +4,7 @@ import { FlatList, View, Text, SafeAreaView, Pressable, Image, StyleSheet } from
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import PeopleContext from "../PeopleContext";
 
+
 export default function PeopleScreen() {
 
     const navigation = useNavigation();
