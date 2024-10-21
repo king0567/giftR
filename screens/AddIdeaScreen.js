@@ -116,6 +116,7 @@ export default function AddIdeaScreen({ route }) {
 
             </View>}
             {!showCamera && <View style={styles.container}>
+                <Text style={styles.heading}>Add A Gift Idea </Text>
                 <KeyboardAvoidingView>
                     <TextInput placeholder="Text" value={ideaText} onChangeText={setIdeaText} />
                 </KeyboardAvoidingView>
@@ -139,8 +140,7 @@ export default function AddIdeaScreen({ route }) {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
-        justifyContent: "center",
+        flex: 1
     },
     message: {
         textAlign: "center",
@@ -165,4 +165,9 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
         color: "white",
     },
+    heading: {
+        padding: 10,
+        fontSize: 40,
+        fontWeight: "bold"
+    }
 });
