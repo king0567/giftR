@@ -3,6 +3,7 @@ import { View, TextInput, Button, TouchableOpacity, Text, StyleSheet, Pressable,
 import PeopleContext from "../PeopleContext";
 import { useNavigation } from "@react-navigation/native";
 import { CameraView, useCameraPermissions } from "expo-camera";
+import * as ImageManipulator from 'expo-image-manipulator';
 
 export default function AddIdeaScreen({ route }) {
     let camera = useRef();
@@ -43,10 +44,21 @@ export default function AddIdeaScreen({ route }) {
         };
         camera
             .takePictureAsync(options)
-            .then(({ uri, width, height }) => {
-                setImgURI(uri)
-                setImgHeight(height)
-                setImgWidth(width)
+            .then(async ({ uri, width, height, exif }) => {
+
+                let newImage
+
+                if (exif.Orientation == 6) {
+                    newImage = await ImageManipulator.manipulateAsync(uri, [{ rotate: 270 }])
+                    setImgURI(newImage.uri)
+                    setImgHeight(newImage.height)
+                    setImgWidth(newImage.width)
+                } else {
+                    setImgURI(uri)
+                    setImgHeight(height)
+                    setImgWidth(width)
+                }
+
                 setShowCamera(false)
                 setTakePhotoButtonText("Retake Photo")
             });

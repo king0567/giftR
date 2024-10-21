@@ -41,6 +41,7 @@ export default function PeopleScreen() {
     return (
         <SafeAreaProvider>
             <SafeAreaView>
+                <Text style={styles.heading}>People List</Text>
                 {people.length === 0 && <View style={styles.listItem}>
                     <Text>No People Saved Yet</Text>
                 </View>}
@@ -81,7 +82,7 @@ export default function PeopleScreen() {
                 style={styles.FAB}
                 onPress={() => navigation.navigate("Add Person")}
             >
-                <Text style={styles.FABText}>Add Another Person</Text>
+                <Text style={styles.FABText}>Add A New Person</Text>
             </Pressable>
         </SafeAreaProvider>
     );
@@ -124,6 +125,11 @@ const styles = StyleSheet.create({
     },
     icons: {
         paddingLeft: 10
+    },
+    heading: {
+        padding: 10,
+        fontSize: 40,
+        fontWeight: "bold"
     }
 
 });

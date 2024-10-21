@@ -33,7 +33,7 @@ export default function IdeaScreen({ route }) {
     return (
         <SafeAreaProvider>
             <SafeAreaView>
-                <Text>{person.name}</Text>
+                <Text style={styles.heading}>{person.name + "'s Gift Ideas"} </Text>
                 {ideas.length === 0 && <View style={styles.listItem}>
                     <Text>No Ideas Yet</Text>
                 </View>}
@@ -111,6 +111,11 @@ const styles = StyleSheet.create({
     },
     icons: {
         paddingLeft: 10
+    },
+    heading: {
+        padding: 10,
+        fontSize: 40,
+        fontWeight: "bold"
     }
 
 });
